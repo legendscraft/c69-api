@@ -18,8 +18,8 @@ Route::group([
     'middleware' => 'api'
 
 ], function () {
-
     Route::post('login', 'ApiAuthController@login');
+    Route::post('register', 'ApiAuthController@register');
     Route::post('logout', 'ApiAuthController@logout');
     Route::post('refresh', 'ApiAuthController@refresh');
     Route::post('me', 'ApiAuthController@me');
