@@ -76,6 +76,8 @@ class ApiAuthController extends Controller
     {
         return response()->json([
             'access_token' => $token,
+            'email' => auth()->user()->email,
+            'name' =>  auth()->user()->name,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
