@@ -61,7 +61,7 @@ protected function unauthenticated($request, AuthenticationException $exception)
             'statusCode' => 8888,
             'statusMessage' => "Session Expired. Log in afresh!",
             'payload' => array()
-        ]);
+        ],500);
 
     }
 

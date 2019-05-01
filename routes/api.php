@@ -22,6 +22,6 @@ Route::group([
     Route::post('register', 'ApiAuthController@register');
     Route::post('logout', 'ApiAuthController@logout');
     Route::post('refresh', 'ApiAuthController@refresh');
-    Route::post('me', 'ApiAuthController@me');
+    Route::apiResource('centres', 'CentreController');
 
 });
