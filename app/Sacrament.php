@@ -4,8 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Preaching extends Model
+class Sacrament extends Model
 {
-
-
+    //
 }

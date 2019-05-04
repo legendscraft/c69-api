@@ -23,5 +23,6 @@ Route::group([
     Route::post('logout', 'ApiAuthController@logout');
     Route::post('refresh', 'ApiAuthController@refresh');
     Route::apiResource('centres', 'CentreController');
+    Route::apiResource('preachings', 'PreachingController');
 
 });
