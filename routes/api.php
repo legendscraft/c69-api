@@ -25,6 +25,7 @@ Route::group([
     Route::group(['middleware' => ['auth:api']],function (){
         Route::apiResource('centres', 'CentreController');
         Route::apiResource('preachings', 'PreachingController');
+        Route::apiResource('sacraments', 'SacramentController');
     });
 
 
