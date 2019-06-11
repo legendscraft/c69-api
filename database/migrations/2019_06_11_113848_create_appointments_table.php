@@ -16,6 +16,14 @@ class CreateAppointmentsTable extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->integer('gender_id')->unsigned();
+            $table->foreign('gender_id')->references('id')->on('genders');
+            $table->integer('centre_id')->unsigned();
+            $table->foreign('centre_id')->references('id')->on('genders');
+            $table->integer('appointment_frequency_id')->unsigned();
+            $table->foreign('appointment_frequency_id')->references('id')->on('appointment_frequencies');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
