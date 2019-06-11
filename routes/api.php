@@ -26,6 +26,7 @@ Route::group([
         Route::apiResource('centres', 'CentreController');
         Route::apiResource('preachings', 'PreachingController');
         Route::apiResource('sacraments', 'SacramentController');
+        Route::apiResource('frequencies', 'AppointmentFrequencyController');
     });
 
 

@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
     {
          $this->call(PreachingsTableSeeder::class);
          $this->call(SacramentsTableSeeder::class);
+         $this->call(AppointmentFrequenciesTableSeeder::class);
     }
 }
