@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\AppointmentFrequency;
 use Illuminate\Http\Request;
 
-class AppointmentFrequencyController extends Controller
+class AppointmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +13,7 @@ class AppointmentFrequencyController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        $frequencies = AppointmentFrequency::all();
-        return response()->json(['statusCode'=>0,'statusMessage'=>count($frequencies).' Centres found','payload'=>$frequencies], 200);
+        //
     }
 
     /**
