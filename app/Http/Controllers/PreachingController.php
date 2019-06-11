@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PreachingResource;
 use App\Preaching;
 use App\PreachingRecord;
+use App\sPreachingRecord;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -82,7 +83,7 @@ class PreachingController extends Controller
      */
     public function edit($id)
     {
-        //
+
     }
 
     /**
@@ -94,7 +95,23 @@ class PreachingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = auth()->user();
+        $user_id = intval($user->id);
+        $preaching_id = intval($request->get('preaching_id'));
+        $record_date = $request->get('record_date');
+        $dcount = intval($request->get('dcount'));
+        $preaching_start_date = Carbon::parse($record_date)->startOfDay();
+        $preaching_end_date = Carbon::parse($record_date)->endOfDay();
+        PreachingRecord::where('id',$id)
+            ->where('preaching_id',$preaching_id)
+            ->where('user_id',$user_id)
+            ->whereRaw(" DATE(record_date) BETWEEN DATE('".$preaching_start_date."') AND DATE('".$preaching_end_date."')")
+            ->update(["dcount"=>$dcount]);
+        $preaching_record = PreachingRecord::find($id);
+        return response()->json([
+            'statusCode'=>0,
+            'statusMessage'=>'Record Saved Successfully',
+            'payload'=>new PreachingResource($preaching_record)], 200);
     }
 
     /**

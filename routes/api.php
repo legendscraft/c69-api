@@ -22,7 +22,10 @@ Route::group([
     Route::post('register', 'ApiAuthController@register');
     Route::post('logout', 'ApiAuthController@logout');
     Route::post('refresh', 'ApiAuthController@refresh');
-    Route::apiResource('centres', 'CentreController');
-    Route::apiResource('preachings', 'PreachingController');
+    Route::group(['middleware' => ['auth:api']],function (){
+        Route::apiResource('centres', 'CentreController');
+        Route::apiResource('preachings', 'PreachingController');
+    });
+
 
 });
