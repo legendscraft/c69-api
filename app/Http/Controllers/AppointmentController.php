@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Appointment;
+use App\Http\Resources\AppointmentDetailResource;
 use App\Http\Resources\AppointmentResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,10 +16,11 @@ class AppointmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $centreId = intval($request->get('centreId'));
         $user = auth()->user();
-        $appointments = Appointment::where('user_id',intval($user->id))->orderBy('name')->get();
+        $appointments = Appointment::where('user_id',intval($user->id))->where('centre_id',$centreId)->orderBy('name')->get();
         return response()->json([
             'statusCode'=>0,
             'statusMessage'=>count($appointments).' Appointments found',
@@ -77,7 +79,18 @@ class AppointmentController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = auth()->user();
+        $appointment = Appointment::where('id',$id)->where('user_id',intval($user->id))->first();
+        if($appointment == null){
+            return response()->json([
+                'statusCode'=>1,
+                'statusMessage'=>'Appointment NOT found!',
+                'payload'=>null], 500);
+        }
+        return response()->json([
+            'statusCode'=>0,
+            'statusMessage'=>'Appointment found',
+            'payload'=>new AppointmentDetailResource($appointment)], 200);
     }
 
     /**

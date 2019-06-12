@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Appointment extends Model
 {
     protected $fillable = [
-        'name', 'user_id','gender_id','centre_id','appointment_frequency_id'
+        'name', 'user_id','gender_id','centre_id','appointment_frequency_id','last_met','is_late'
     ];
 
     public function gender()
