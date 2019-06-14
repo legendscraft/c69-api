@@ -13,7 +13,7 @@ class GendersTableSeeder extends Seeder
     {
         DB::table('genders')->insert([
             ["name"=>'Female'],
-            ["name"=>'male']
+            ["name"=>'Male']
         ]);
     }
 }

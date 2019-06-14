@@ -20,6 +20,7 @@ class AppointmentDetailResource extends JsonResource
             'centre'=>$this->centre->name,
             'name'=>$this->name,
             'isLate'=>$this->is_late,
+            'comments'=>$this->comments,
             'lastMet'=>$this->last_met];
     }
 }

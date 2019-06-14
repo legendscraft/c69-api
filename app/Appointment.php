@@ -24,4 +24,9 @@ class Appointment extends Model
     {
         return $this->belongsTo('App\Centre','centre_id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany('App\AppointmentComment');
+    }
 }

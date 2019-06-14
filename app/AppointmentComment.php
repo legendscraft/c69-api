@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AppointmentComment extends Model
 {
     protected $fillable = [
-        'comment', 'appointment_id'
+        'comment','mdate', 'appointment_id'
     ];
 
     public function appointment()

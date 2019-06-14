@@ -16,6 +16,7 @@ class CreateAppointmentCommentsTable extends Migration
         Schema::create('appointment_comments', function (Blueprint $table) {
             $table->increments('id');
             $table->text('comment');
+            $table->dateTime('mdate');
             $table->integer('appointment_id')->unsigned();
             $table->foreign('appointment_id')->references('id')->on('appointments');
             $table->timestamps();
