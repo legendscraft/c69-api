@@ -29,7 +29,7 @@ Route::group([
         Route::apiResource('appointments', 'AppointmentController');
         Route::apiResource('frequencies', 'FrequencyController');
         Route::apiResource('genders', 'GenderController');
-
+        Route::apiResource('reports', 'ReportController');
     });
 
 
