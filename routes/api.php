@@ -30,6 +30,7 @@ Route::group([
         Route::apiResource('frequencies', 'FrequencyController');
         Route::apiResource('genders', 'GenderController');
         Route::apiResource('reports', 'ReportController');
+        Route::apiResource('recipients', 'RecipientController');
     });
 
 

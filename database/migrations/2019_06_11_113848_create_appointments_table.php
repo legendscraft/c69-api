@@ -19,7 +19,7 @@ class CreateAppointmentsTable extends Migration
             $table->integer('gender_id')->unsigned();
             $table->foreign('gender_id')->references('id')->on('genders');
             $table->integer('centre_id')->unsigned();
-            $table->foreign('centre_id')->references('id')->on('genders');
+            $table->foreign('centre_id')->references('id')->on('centres');
             $table->integer('appointment_frequency_id')->unsigned();
             $table->foreign('appointment_frequency_id')->references('id')->on('appointment_frequencies');
             $table->integer('user_id')->unsigned();
