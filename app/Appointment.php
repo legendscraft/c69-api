@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Appointment extends Model
 {
@@ -28,5 +29,6 @@ class Appointment extends Model
     public function comments()
     {
         return $this->hasMany('App\AppointmentComment');
+
     }
 }
