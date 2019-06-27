@@ -53,6 +53,9 @@ class SendReportController extends Controller
 
         //Send email, attach full path
 
+
+
+        unlink($full_path);
         return response()->json(['statusCode'=>0,'statusMessage'=>'Report Sent Successfully','payload'=>[]], 200);
     }
 
