@@ -1,34 +1,38 @@
 <?php
 
-namespace App;
+namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Model;
+use App\PreachingRecord;
+use App\SacramentRecord;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class Appointment extends Model
+trait C69SharedTrait
 {
-    protected $fillable = [
-        'name', 'user_id','gender_id','centre_id','appointment_frequency_id','last_met','is_late'
-    ];
 
-    public function gender()
-    {
-        return $this->belongsTo('App\Gender','gender_id');
+    public  function  get_report($period){
+        $start_date = Carbon::parse(1 .' '.$period)->startOfMonth();
+        $end_date = Carbon::parse(1 .' '.$period)->endOfMonth();
+
+        $payload = array();
+        $user = auth()->user();
+        $sacraments =  SacramentRecord::join('sacraments','sacrament_records.sacrament_id','=','sacraments.id')
+            ->where('user_id',intval($user->id))
+            ->whereBetween('record_date',[$start_date,$end_date])
+            ->select('name',DB::raw('sum(dcount) as recs'))
+            ->groupBy('name')->get();
+        $sacrement_report = array("title"=>"Sacraments",'records'=>$sacraments);
+        array_push($payload,$sacrement_report);
+
+        $preachings =  PreachingRecord::join('preachings','preaching_records.preaching_id','=','preachings.id')
+            ->where('user_id',intval($user->id))
+            ->whereBetween('record_date',[$start_date,$end_date])
+            ->select('name',DB::raw('sum(dcount) as recs'))
+            ->groupBy('name')->get();
+        $preachings_report = array("title"=>"Preaching",'records'=>$preachings);
+        array_push($payload,$preachings_report);
+        return $payload;
+
     }
 
-    public function frequency()
-    {
-        return $this->belongsTo('App\AppointmentFrequency','appointment_frequency_id');
-    }
-
-    public function centre()
-    {
-        return $this->belongsTo('App\Centre','centre_id');
-    }
-
-    public function comments()
-    {
-        return $this->hasMany('App\AppointmentComment');
-
-    }
 }

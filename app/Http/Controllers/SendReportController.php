@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Appointment;
-use App\AppointmentComment;
+use App\Traits\C69SharedTrait;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class AppointmentCommentController extends Controller
+class SendReportController extends Controller
 {
+    use C69SharedTrait;
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +18,7 @@ class AppointmentCommentController extends Controller
      */
     public function index()
     {
-
+        //
     }
 
     /**
@@ -29,9 +30,7 @@ class AppointmentCommentController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'appointment_id' => ['required', 'numeric'],
-            'comments' => ['required'],
-            'mdate' => ['required'],
+            'period' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -41,23 +40,20 @@ class AppointmentCommentController extends Controller
             }
             return response()->json($errs, 500);
         }
-
         $user = auth()->user();
-        $user_id = intval($user->id);
-        $appointment_id = intval($request->get('appointment_id'));
-        $appointment = Appointment::where('user_id', $user_id)->where('id', $appointment_id)->first();
-        if ($appointment) {
-            $comment = trim($request->get('comments'));
-            $meeting_date = trim($request->get('mdate'));
-            $mdate = Carbon::parse($meeting_date)->startOfDay();
-            AppointmentComment::create([
-                'comment' => $comment,
-                'mdate' => $mdate,
-                'appointment_id' => $appointment_id]);
-            return response()->json(['statusCode' => 0, 'statusMessage' => "Appointment Comment Saved Successfully"], 200);
-        } else {
-            return response()->json(['statusCode' => 1, 'statusMessage' => "Appointment not found"], 500);
-        }
+        $period = $request->get('period');
+        $title = "C69 SYSTEM - ${period} Report";
+        $report_data =  $this->get_report($period);
+        $data = array('user'=>$user,"title"=>$title,"report_data"=>$report_data);
+        $pdf = PDF::loadView('report.template', array('data' => $data));
+        $filepath = public_path('reports');
+        $filename = Carbon::now()->format('Ymdhis').".pdf";
+        $full_path = $filepath.'/'.$filename;
+        $pdf->save($full_path);
+
+        //Send email, attach full path
+
+        return response()->json(['statusCode'=>0,'statusMessage'=>'Report Sent Successfully','payload'=>[]], 200);
     }
 
     /**
@@ -80,7 +76,7 @@ class AppointmentCommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-
+        //
     }
 
     /**

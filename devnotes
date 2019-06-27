@@ -1,0 +1,3 @@
+mkdir -p storage/fonts
+mkdir -p public/reports
+sudo chmod -R 775 storage/fonts
