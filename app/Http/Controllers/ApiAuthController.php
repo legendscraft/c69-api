@@ -43,45 +43,84 @@ class ApiAuthController extends Controller
     }
 
     public function resetpwd(Request $request){
-        $validator = Validator::make($request->all(), [
-            'email' => ['required','email']
-        ]);
+        //cHANGE pASSWORD
+        if($request->has('token')){
+            $validator = Validator::make($request->all(), [
+                'email' => ['required','email'],
+                'token' => ['required'],
+                'password' => ['required','min:8'],
+                'confirm_password' => ['required','same:password']
+            ]);
 
-        if ($validator->fails()) {
-            $errs =array();
-            foreach (array_values($validator->getMessageBag()->getMessages()) as $err){
-                $errs = array_merge_recursive($err);
+            if ($validator->fails()) {
+                $errs =array();
+                foreach (array_values($validator->getMessageBag()->getMessages()) as $err){
+                    $errs = array_merge_recursive($err);
+                }
+                return response()->json($errs, 500);
             }
-            return response()->json($errs, 500);
-        }
-
-        $email = trim($request->get('email'));
-        $user = User::where('email',$email)->first();
-        if($user){
-            //Password Reset is Active
-            if($user->is_pwd_reset){
-                return response()
-                    ->json([
-                        'statusCode'=>550,
-                        'statusMessage'=>"Use The Reset Password Token sent to ${email}",
-                        'payload'=>[]], 200);
+            $password = bcrypt(trim($request->get('password')));
+            $email = trim($request->get('email'));
+            $token = trim($request->get('token'));
+            $user = User::where('email',$email)->where('is_pwd_reset',true)->where('password_reset_token',$token)->first();
+            if(null == $user){
+                return response()->json(['statusCode'=>1,'statusMessage'=>"No account exist for ${email}, OR The token you provided is not valid"], 500);
             }
 
-
-            $token =strtoupper(substr(md5(rand()),0,8));
-            $user->password_reset_token = $token;
-            $user->is_pwd_reset = true;
+            $user->password = $password;
+            $user->password_reset_token = '';
+            $user->is_pwd_reset = false;
             $user->save();
-            //Send Token email
-            $user->notify(new PasswordReset($token));
+
             return response()
                 ->json([
-                'statusCode'=>0,
-                'statusMessage'=>"Reset Password Email Sent Successfully to ${email}",
-                'payload'=>[]], 200);
+                    'statusCode'=>0,
+                    'statusMessage'=>"Password changed Successfully.",
+                    'payload'=>[]], 200);
         }else{
-            return response()->json(['statusCode'=>1,'statusMessage'=>"No account exist for ${email}"], 500);
+            //Reset Password
+            $validator = Validator::make($request->all(), [
+                'email' => ['required','email']
+            ]);
+
+            if ($validator->fails()) {
+                $errs =array();
+                foreach (array_values($validator->getMessageBag()->getMessages()) as $err){
+                    $errs = array_merge_recursive($err);
+                }
+                return response()->json($errs, 500);
+            }
+
+            $email = trim($request->get('email'));
+            $user = User::where('email',$email)->first();
+            if($user){
+                //Password Reset is Active
+                if($user->is_pwd_reset){
+                    return response()
+                        ->json([
+                            'statusCode'=>550,
+                            'statusMessage'=>"Use The Reset Password Token sent to ${email}",
+                            'payload'=>[]], 200);
+                }
+
+
+                $token =strtoupper(substr(md5(rand()),0,8));
+                $user->password_reset_token = $token;
+                $user->is_pwd_reset = true;
+                $user->save();
+                //Send Token email
+                $user->notify(new PasswordReset($token));
+                return response()
+                    ->json([
+                        'statusCode'=>0,
+                        'statusMessage'=>"Reset Password Email Sent Successfully to ${email}",
+                        'payload'=>[]], 200);
+            }else{
+                return response()->json(['statusCode'=>1,'statusMessage'=>"No account exist for ${email}"], 500);
+            }
         }
+
+
 
     }
 
