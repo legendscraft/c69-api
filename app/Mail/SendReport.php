@@ -10,15 +10,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class SendReport extends Mailable
 {
     use Queueable, SerializesModels;
+    public $name;
+    public $title;
+    public $attachment_path;
 
     /**
-     * Create a new message instance.
+     * Create a new message instance.+
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($title,$name,$attachment_path)
     {
-        //
+        $this->name = $name;
+        $this->title = $title;
+        $this->attachment_path = $attachment_path;
     }
 
     /**
@@ -28,32 +33,10 @@ class SendReport extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->subject($this->title)
+            ->view('mail.report')
+            ->attach($this->attachment_path, [
+                'mime' => 'application/pdf',
+            ]);
     }
 }
-
-/*
-class AttachmentRejected extends Mailable
-{
-    use Queueable, SerializesModels;
-    public $attachment;
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct(Attachment $attachment)
-    {
-        $this->attachment = $attachment;
-    }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build()
-    {
-        return $this->subject($this->attachment->attachmentType->name .' Application Rejected')->view('mail.student-attachment-rejected');
-    }
-}*/

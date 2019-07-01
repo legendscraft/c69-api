@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendReport;
+use App\Recipient;
 use App\Traits\C69SharedTrait;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class SendReportController extends Controller
@@ -41,6 +44,14 @@ class SendReportController extends Controller
             return response()->json($errs, 500);
         }
         $user = auth()->user();
+
+        //Recepients
+        $report_recepients = Recipient::where('user_id',intval($user->id))
+            ->pluck('recipient')->toArray();
+        if(count($report_recepients) <= 0){
+            return response()->json(['statusCode'=>1,'statusMessage'=>'You have not set any report recipients','payload'=>[]], 500);
+        }
+        array_push($report_recepients,$user->email);
         $period = $request->get('period');
         $title = "C69 SYSTEM - ${period} Report";
         $report_data =  $this->get_report($period);
@@ -52,10 +63,9 @@ class SendReportController extends Controller
         $pdf->save($full_path);
 
         //Send email, attach full path
+        Mail::cc($report_recepients)
+            ->queue(new SendReport($title,$user->name,$full_path));
 
-
-
-        unlink($full_path);
         return response()->json(['statusCode'=>0,'statusMessage'=>'Report Sent Successfully','payload'=>[]], 200);
     }
 
