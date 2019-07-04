@@ -11,16 +11,22 @@ class SacramentsTableSeeder extends Seeder
      */
     public function run()
     {
+
         DB::table('sacraments')->insert([
             ["name"=>'Baptisms'],
-            ["name"=>'Confirmations and 1st Holy Communions'],
-            ["name"=>'Masses in Churches, Chaplaincies, etc.'],
+            ["name"=>'Confirmations and 1st H Communion'],
+            ["name"=>'Masses outside ctr and oc'],
             ["name"=>'Confessions'],
+            ["name"=>'Spiritual Direction'],
             ["name"=>'Anointing of the Sick'],
-            ["name"=>'Marriages']
+            ["name"=>'Matrimony']
         ]);
     }
 }
+
+
+
+
 
 
 

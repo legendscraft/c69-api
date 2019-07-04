@@ -13,11 +13,10 @@ class PreachingsTableSeeder extends Seeder
     {
 
         DB::table('preachings')->insert([
-            ["name"=>'Spiritual Direction'],
             ["name"=>'Meditations and Homilies'],
-            ["name"=>'Days of Recollection'],
-            ["name"=>'Long Retreats'],
-            ["name"=>'Classes and Equivalents'],
+            ["name"=>'Recollections'],
+            ["name"=>'Retreats'],
+            ["name"=>'Classes,etc']
         ]);
         
     }
