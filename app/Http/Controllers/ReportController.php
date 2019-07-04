@@ -21,7 +21,8 @@ class ReportController extends Controller
 
         $user = auth()->user();
         $prechings =  PreachingRecord::where('user_id',intval($user->id))
-            ->select(DB::raw('sum(dcount) as data'),DB::raw("DATE_FORMAT(record_date, '%M %Y') period"),DB::raw("DATE_FORMAT(record_date, '%m %Y') dperiod"))
+            ->select(DB::raw('sum(dcount) as data'),DB::raw("DATE_FORMAT(record_date, '%M %Y') period"),
+                DB::raw("DATE_FORMAT(record_date, '%m %Y') dperiod"))
             ->orderBy('dperiod','DESC')
             ->groupBy('dperiod','period')
             ->pluck("period")->toArray();
