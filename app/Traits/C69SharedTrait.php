@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Preaching;
 use App\PreachingRecord;
 use App\SacramentRecord;
 use Carbon\Carbon;
@@ -16,12 +17,18 @@ trait C69SharedTrait
 
         $payload = array();
         $user = auth()->user();
-        $preachings =  PreachingRecord::join('preachings','preaching_records.preaching_id','=','preachings.id')
-            ->where('user_id',intval($user->id))
-            ->whereBetween('record_date',[$start_date,$end_date])
-            ->select('name',DB::raw('sum(dcount) as recs'))
-            ->groupBy('name')->get();
-        $preachings_report = array("title"=>"Preaching",'records'=>$preachings);
+        $preachings = Preaching::get();
+        $preachings_data =array();
+        foreach ($preachings as $preaching){
+            $preaching_record =  PreachingRecord::where('user_id',intval($user->id))
+                ->where('preaching_id',intval($preaching->id))
+                ->whereBetween('record_date',[$start_date,$end_date])
+                ->select('preaching_id',DB::raw('sum(dcount) as recs'))
+                ->groupBy('preaching_id')->get();
+            array_push($preachings_data,array('name'=>$preaching->name,'recs'=>$preaching_record['recs']));
+        }
+
+        $preachings_report = array("title"=>"Preaching",'records'=>$preachings_data);
         array_push($payload,$preachings_report);
 
         $sacraments =  SacramentRecord::join('sacraments','sacrament_records.sacrament_id','=','sacraments.id')
