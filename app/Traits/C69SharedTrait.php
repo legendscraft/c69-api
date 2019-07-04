@@ -24,7 +24,7 @@ trait C69SharedTrait
                 ->where('preaching_id',intval($preaching->id))
                 ->whereBetween('record_date',[$start_date,$end_date])
                 ->select('preaching_id',DB::raw('sum(dcount) as recs'))
-                ->groupBy('preaching_id')->get();
+                ->groupBy('preaching_id')->first();
             array_push($preachings_data,array('name'=>$preaching->name,'recs'=>$preaching_record->recs));
         }
 
