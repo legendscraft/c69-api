@@ -38,8 +38,8 @@ trait C69SharedTrait
             $sacrament_record =  SacramentRecord::where('user_id',intval($user->id))
                 ->where('sacrament_id',intval($sacrament->id))
                 ->whereBetween('record_date',[$start_date,$end_date])
-                ->select('name',DB::raw('sum(dcount) as recs'))
-                ->groupBy('name')->get();
+                ->select('sacrament_id',DB::raw('sum(dcount) as recs'))
+                ->groupBy('sacrament_id')->first();
             array_push($sacraments_data,array('name'=>$sacrament->name,'recs'=>$sacrament_record->recs));
         }
         $sacrement_report = array("title"=>"Sacraments",'records'=>$sacraments_data);
