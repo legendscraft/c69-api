@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\PreachingRecord;
+use App\Recipient;
 use App\SacramentRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,8 +45,17 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $period = $request->get('period');
-        $payload =$this->get_report($period);
-        return response()->json(['statusCode'=>0,'statusMessage'=>'Report found','payload'=>$payload], 200);
+
+        $user = auth()->user();
+        //Recepients
+        $recepients = Recipient::where('user_id',intval($user->id))
+            ->pluck('recipient')->toArray();
+        if(count($recepients) <= 0){
+            return response()->json(['statusCode'=>1,'statusMessage'=>'You have not set any report recipients','payload'=>[]], 500);
+        }
+        $report = $this->get_report($period);
+        return response()->json(['statusCode'=>0,'statusMessage'=>'Report found',
+            'payload'=>array('report'=>$report,'recepients'=>$recepients)], 200);
     }
 
     /**
