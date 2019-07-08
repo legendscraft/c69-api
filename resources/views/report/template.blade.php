@@ -16,12 +16,12 @@
                             <tbody>
                             @foreach($data['report_data'] as $dataItem)
                                 <tr>
-                                    <th>{{$dataItem['title']}}</th>
+                                    {{--<th>{{$dataItem['title']}}</th>--}}
                                     <th class="text-center">Total</th>
                                 </tr>
                                 @foreach($dataItem['records'] as $record)
                                     <tr>
-                                        <td>{{ $record['name'] }}</td>
+                                        {{--<td>{{ $record['name'] }}</td>--}}
                                         <td class="text-center">{{ $record['recs'] }}</td>
                                     </tr>
                                 @endforeach

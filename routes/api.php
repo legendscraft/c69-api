@@ -33,7 +33,7 @@ Route::group([
         Route::apiResource('genders', 'GenderController');
         Route::apiResource('reports', 'ReportController');
         Route::apiResource('recipients', 'RecipientController');
-        //Route::apiResource('send-report', 'SendReportController');
+        Route::apiResource('send-report', 'SendReportController');
     });
 
 

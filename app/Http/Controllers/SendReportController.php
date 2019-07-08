@@ -53,7 +53,7 @@ class SendReportController extends Controller
         }
         array_push($report_recepients,$user->email);
         $period = $request->get('period');
-        $title = "C69 SYSTEM - ${period} Report";
+        $title = "C69 - ${period} Report";
         $report_data =  $this->get_report($period);
         $data = array('user'=>$user,"title"=>$title,"report_data"=>$report_data);
         $pdf = PDF::loadView('report.template', array('data' => $data));
