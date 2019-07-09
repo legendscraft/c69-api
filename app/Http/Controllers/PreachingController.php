@@ -39,7 +39,22 @@ class PreachingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = auth()->user();
+        $data = $request->all();
+        foreach ($data as $preaching_record){
+            $id = intval($preaching_record['id']);
+            $preaching_id = intval($preaching_record['preaching_id']);
+            $dcount = intval($preaching_record['dcount']);
+            $user_id = intval($user->id);
+            $record_date = trim($preaching_record['record_date']);
+
+            PreachingRecord::where('id',$id)
+                ->where('user_id',$user_id)
+                ->where('preaching_id',$preaching_id)
+                ->update(['dcount'=>$dcount,'record_date'=>$record_date]);
+        }
+
+        return response()->json(['statusCode'=>0,'statusMessage'=>'Records saved Successfully','payload'=>[]], 200);
     }
 
     /**

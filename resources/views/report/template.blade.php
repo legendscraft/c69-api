@@ -28,7 +28,7 @@
                             @endforeach
                             </tbody>
                         </table>
-                    <p class="float-right">Submitted By {{$data['user']->name}}({{$data['user']->email}})</p>
+                    <p class="float-right">Submitted by {{$data['user']->name}} ({{$data['user']->email}})</p>
                     </div>
                 </div>
             </div>

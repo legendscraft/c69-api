@@ -28,7 +28,22 @@ class SacramentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = auth()->user();
+        $data = $request->all();
+        foreach ($data as $sacrament_record){
+            $id = intval($sacrament_record['id']);
+            $sacrament_id = intval($sacrament_record['sacrament_id']);
+            $dcount = intval($sacrament_record['dcount']);
+            $user_id = intval($user->id);
+            $record_date = trim($sacrament_record['record_date']);
+
+            SacramentRecord::where('id',$id)
+                ->where('user_id',$user_id)
+                ->where('sacrament_id',$sacrament_id)
+                ->update(['dcount'=>$dcount,'record_date'=>$record_date]);
+        }
+
+        return response()->json(['statusCode'=>0,'statusMessage'=>'Records saved Successfully','payload'=>[]], 200);
     }
 
     /**
@@ -87,11 +102,11 @@ class SacramentController extends Controller
             ->where('user_id',$user_id)
             ->whereRaw(" DATE(record_date) BETWEEN DATE('".$sacrament_start_date."') AND DATE('".$sacrament_end_date."')")
             ->update(["dcount"=>$dcount]);
-        $preaching_record = SacramentRecord::find($id);
+        $sacrament_record = SacramentRecord::find($id);
         return response()->json([
             'statusCode'=>0,
             'statusMessage'=>'Record Saved Successfully',
-            'payload'=>new SacramentResource($preaching_record)], 200);
+            'payload'=>new SacramentResource($sacrament_record)], 200);
     }
 
     /**
