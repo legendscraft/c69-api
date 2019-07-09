@@ -1,3 +1,21 @@
 mkdir -p storage/fonts
 mkdir -p public/reports
 sudo chmod -R 775 storage/fonts
+
+
+
+[program:c69]
+process_name=%(program_name)s_%(process_num)02d
+command=php /opt/c69-api/artisan queue:work database  --tries=1
+autostart=true
+autorestart=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/opt/c69-api/storage/logs/laravel.log
+
+
+
+
+
+
