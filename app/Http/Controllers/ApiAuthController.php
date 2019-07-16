@@ -28,7 +28,7 @@ class ApiAuthController extends Controller
             foreach (array_values($validator->getMessageBag()->getMessages()) as $err){
                 $errs = array_merge_recursive($err);
             }
-            return response()->json($errs, 500);
+            return response()->json(['statusCode'=>1,'statusMessage'=>$errs[0],"payload"=>$errs], 500);
         }
         $password = bcrypt(trim($request->get('password')));
         User::create([
