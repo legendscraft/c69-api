@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Recipient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class RecipientController extends Controller
@@ -29,8 +30,9 @@ class RecipientController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
+        $recipient = trim($request->get('recipient'));
         $validator = Validator::make($request->all(), [
-            'recipient' => ['required','email','unique:recipients,recipient,NULL,user_id']
+            'recipient' => ['required','email','unique:recipients,recipient,NULL,id,user_id,'.$user->id]
         ]);
 
         if ($validator->fails()) {
@@ -43,7 +45,7 @@ class RecipientController extends Controller
         }
 
         Recipient::create([
-            'recipient'=>trim($request->get('recipient')),
+            'recipient'=>$recipient,
             'user_id'=>intval($user->id),
         ]);
 
