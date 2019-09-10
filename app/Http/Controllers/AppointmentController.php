@@ -8,6 +8,7 @@ use App\Http\Resources\AppointmentDetailResource;
 use App\Http\Resources\AppointmentResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -53,6 +54,7 @@ class AppointmentController extends Controller
             }
             return response()->json($errs, 500);
         }
+        DB::beginTransaction();
         try {
             $user = auth()->user();
             $name = trim($request->get('name'));
@@ -72,8 +74,10 @@ class AppointmentController extends Controller
                 'appointment_frequency_id' => $appointment_frequency_id]);
 
             AppointmentComment::create(['comment' => $comment, 'mdate' => $mdate, 'appointment_id' => intval($appointment->id)]);
+            DB::commit();
             return response()->json(['statusCode' => 0, 'statusMessage' => 'Appointment Added Successfully', 'payload' => new AppointmentDetailResource($appointment)], 200);
         } catch (\Throwable $e) {
+            DB::rollBack();
             Log::error($e->getMessage());
             return response()->json(['statusCode' => 1, 'statusMessage' => "'" . $name . "' Already Exists"], 500);
         }

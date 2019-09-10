@@ -30,6 +30,8 @@ class CreateAppointmentsTable extends Migration
         });
     }
 
+
+
     /**
      * Reverse the migrations.
      *
