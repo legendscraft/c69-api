@@ -72,7 +72,29 @@ class RecipientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'recipient' => ['required']
+        ]);
+
+        if ($validator->fails()) {
+            $errs =array();
+            foreach (array_values($validator->getMessageBag()->getMessages()) as $err){
+                $errs = array_merge_recursive($err);
+            }
+            return response()->json($errs, 500);
+        }
+
+        try{
+            $user = auth()->user();
+            $email = trim($request->get('recipient'));
+            $recipient = Recipient::where('user_id',intval($user->id))->where('id',$id)->first();
+            $recipient->recipient = $email;
+            $recipient->save();
+            return response()->json(['statusCode'=>0,'statusMessage'=>'Recipient updated successfully'], 200);
+        }catch (\Throwable $e){
+            Log::error($e->getMessage());
+            return response()->json(['statusCode'=>1,'statusMessage'=>'Recipient could not be updated'], 500);
+        }
     }
 
     /**
