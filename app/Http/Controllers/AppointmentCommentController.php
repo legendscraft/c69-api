@@ -6,6 +6,7 @@ use App\Appointment;
 use App\AppointmentComment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmentCommentController extends Controller
@@ -91,6 +92,8 @@ class AppointmentCommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = auth()->user();
+        AppointmentComment::destroy($id);
+        return response()->json(['statusCode'=>0,'statusMessage'=>'Appointment comment deleted successfully','payload'=>[]], 200);
     }
 }
