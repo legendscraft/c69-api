@@ -115,7 +115,49 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'centre' => ['required', 'numeric'],
+            'frequency' => ['required', 'numeric'],
+            'gender' => ['required', 'numeric'],
+            'name' => ['required'],
+        ]);
+
+        if ($validator->fails()) {
+            $errs = array();
+            foreach (array_values($validator->getMessageBag()->getMessages()) as $err) {
+                $errs = array_merge_recursive($err);
+            }
+            return response()->json($errs, 500);
+        }
+
+        $user = auth()->user();
+        $appointment = Appointment::where('id', $id)->where('user_id', intval($user->id))->first();
+        if ($appointment == null) {
+            return response()->json([
+                'statusCode' => 1,
+                'statusMessage' => 'Appointment NOT found!',
+                'payload' => null], 500);
+        }
+        DB::beginTransaction();
+        try{
+            $name = trim($request->get('name'));
+            $gender_id = intval($request->get('gender'));
+            $centre_id = intval($request->get('centre'));
+            $appointment_frequency_id = intval($request->get('frequency'));
+            $appointment->name = $name;
+            $appointment->gender_id = $gender_id;
+            $appointment->centre_id = $centre_id;
+            $appointment->appointment_frequency_id = $appointment_frequency_id;
+            $appointment->save();
+            DB::commit();
+            return response()->json(['statusCode' => 0, 'statusMessage' => 'Appointment Updated Successfully',
+                'payload' => []], 200);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['statusCode' => 1, 'statusMessage' => "'" . $name . "' Already Exists"], 500);
+        }
+
     }
 
     /**
