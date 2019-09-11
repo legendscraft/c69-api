@@ -83,6 +83,8 @@ class RecipientController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = auth()->user();
+        Recipient::destroy($id);
+        return response()->json(['statusCode'=>0,'statusMessage'=>'Recipient deleted successfully','payload'=>[]], 200);
     }
 }
