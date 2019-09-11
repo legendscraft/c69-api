@@ -81,6 +81,30 @@ class AppointmentCommentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'appointment_id' => ['required', 'numeric'],
+            'comments' => ['required'],
+            'mdate' => ['required'],
+        ]);
+
+        if ($validator->fails()) {
+            $errs = array();
+            foreach (array_values($validator->getMessageBag()->getMessages()) as $err) {
+                $errs = array_merge_recursive($err);
+            }
+            return response()->json($errs, 500);
+        }
+
+        $user = auth()->user();
+        $comment = trim($request->get('comments'));
+        $meeting_date = trim($request->get('mdate'));
+        $mdate = Carbon::parse($meeting_date)->startOfDay();
+        $appointment_id = intval($request->get('appointment_id'));
+        $app_comment = AppointmentComment::where('id',$id)->where('appointment_id',$appointment_id)->first();
+        $app_comment->comment=$comment;
+        $app_comment->mdate=$mdate;
+        $app_comment->save();
+        return response()->json(['statusCode' => 0, 'statusMessage' => "Appointment Comment updated successfully"], 200);
 
     }
 

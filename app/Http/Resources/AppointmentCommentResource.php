@@ -17,8 +17,10 @@ class AppointmentCommentResource extends JsonResource
     {
         return [
             'id'=>$this->id,
+            'appointment_id'=>$this->appointment_id,
             'comment'=>$this->comment,
             'mdate'=>Carbon::parse($this->mdate)->format('l jS \\of F Y'),
+            'rawDate'=>Carbon::parse($this->mdate)->toDateString(),
         ];
     }
 }
