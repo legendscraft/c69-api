@@ -126,6 +126,15 @@ class AppointmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+            $user = auth()->user();
+            $appointment = Appointment::where('user_id',intval($user->id))->where('id',$id)->first();
+            AppointmentComment::where('appointment_id',intval($appointment->id))->delete();
+            $appointment->delete();
+            return response()->json(['statusCode'=>0,'statusMessage'=>'Appointment Deleted Successfully'], 200);
+        }catch (\Throwable $e){
+            Log::error($e->getMessage());
+            return response()->json(['statusCode'=>1,'statusMessage'=>'Appointment Could not be deleted'], 500);
+        }
     }
 }
