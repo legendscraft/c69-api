@@ -11,6 +11,7 @@ class SendReport extends Mailable
 {
     use Queueable, SerializesModels;
     public $name;
+    public $message;
     public $title;
     public $attachment_path;
 
@@ -19,9 +20,10 @@ class SendReport extends Mailable
      *
      * @return void
      */
-    public function __construct($title,$name,$attachment_path)
+    public function __construct($title,$name,$message,$attachment_path)
     {
         $this->name = $name;
+        $this->message = $message;
         $this->title = $title;
         $this->attachment_path = $attachment_path;
     }

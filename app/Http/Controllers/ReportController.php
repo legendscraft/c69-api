@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\PreachingRecord;
 use App\Recipient;
 use App\SacramentRecord;
+use App\Traits\C69SharedTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Traits\C69SharedTrait;
 
 class ReportController extends Controller
 {
@@ -45,7 +45,6 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $period = $request->get('period');
-
         $user = auth()->user();
         //Recepients
         $recepients = Recipient::where('user_id',intval($user->id))

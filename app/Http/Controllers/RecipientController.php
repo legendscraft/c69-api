@@ -60,7 +60,13 @@ class RecipientController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = auth()->user();
+        $name = $user->name;
+        $title = trim($id);
+        $message = "Find attached the ".$title." submitted by ".$name;
+        $recipients = Recipient::where('user_id',intval($user->id))->pluck('recipient')->toArray();
+        $payload =array('recipients'=>$recipients,'message'=>$message);
+        return response()->json(['statusCode'=>0,'statusMessage'=>count($payload).' Recipient found','payload'=>$payload], 200);
     }
 
     /**

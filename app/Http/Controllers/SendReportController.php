@@ -8,6 +8,7 @@ use App\Traits\C69SharedTrait;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -33,7 +34,9 @@ class SendReportController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'period' => ['required']
+            'period' => ['required'],
+            'message' => ['required'],
+            'recipients' => ['required'],
         ]);
 
         if ($validator->fails()) {
@@ -46,12 +49,27 @@ class SendReportController extends Controller
         $user = auth()->user();
 
         //Recepients
-        $report_recepients = Recipient::where('user_id',intval($user->id))
+       /* $report_recepients = Recipient::where('user_id',intval($user->id))
             ->pluck('recipient')->toArray();
         if(count($report_recepients) <= 0){
             return response()->json(['statusCode'=>1,'statusMessage'=>'You have not set any report recipients','payload'=>[]], 500);
         }
-        array_push($report_recepients,$user->email);
+        array_push($report_recepients,$user->email);*/
+
+        $recipient_array = explode(',',$request->get('recipients'));
+        $err_msg = null;
+        foreach ($recipient_array as $recp){
+            if(!filter_var($recp, FILTER_VALIDATE_EMAIL)){
+                $err_msg = "The email address ".$recp." is invalid";
+            break;
+            }
+        }
+
+        if($err_msg){
+            return response()->json(['statusCode'=>1,'statusMessage'=>$err_msg,'payload'=>[$err_msg]], 500);
+        }
+        Log::info($err_msg);
+        $message = trim($request->get('message'));
         $period = $request->get('period');
         $title = "C69 - ${period} Report";
         $report_data =  $this->get_report($period);
@@ -63,8 +81,8 @@ class SendReportController extends Controller
         $pdf->save($full_path);
 
         //Send email, attach full path
-        Mail::cc($report_recepients)
-            ->queue(new SendReport($title,$user->name,$full_path));
+        Mail::cc($recipient_array)
+            ->queue(new SendReport($title,$user->name,$message,$full_path));
 
         return response()->json(['statusCode'=>0,'statusMessage'=>'Report Sent Successfully','payload'=>[]], 200);
     }
