@@ -6,12 +6,13 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class SendReport extends Mailable
 {
     use Queueable, SerializesModels;
     public $name;
-    public $message;
+    public $xmessage;
     public $title;
     public $attachment_path;
 
@@ -20,10 +21,10 @@ class SendReport extends Mailable
      *
      * @return void
      */
-    public function __construct($title,$name,$message,$attachment_path)
+    public function __construct($title,$name,$xmessage,$attachment_path)
     {
         $this->name = $name;
-        $this->message = $message;
+        $this->xmessage = $xmessage;
         $this->title = $title;
         $this->attachment_path = $attachment_path;
     }
