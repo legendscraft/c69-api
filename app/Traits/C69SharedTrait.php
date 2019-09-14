@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\DB;
 trait C69SharedTrait
 {
 
-    public  function  get_report($period){
+    public  function  get_report($aperiod){
+        $period = trim($aperiod);
         $start_date = Carbon::parse(1 .' '.$period)->startOfMonth();
         $end_date = Carbon::parse(1 .' '.$period)->endOfMonth();
 
