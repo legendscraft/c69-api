@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Notifications\PasswordReset;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ApiAuthController extends Controller
@@ -45,6 +47,7 @@ class ApiAuthController extends Controller
     public function resetpwd(Request $request){
         //cHANGE pASSWORD
         if($request->has('token')){
+            Log::info("Incoming Request .....");
             $validator = Validator::make($request->all(), [
                 'email' => ['required','email'],
                 'token' => ['required'],
@@ -59,6 +62,9 @@ class ApiAuthController extends Controller
                 }
                 return response()->json($errs, 500);
             }
+
+            Log::info($request->all());
+
             $password = bcrypt(trim($request->get('password')));
             $email = trim($request->get('email'));
             $token = trim($request->get('token'));
@@ -91,18 +97,19 @@ class ApiAuthController extends Controller
                 return response()->json($errs, 500);
             }
 
+
+
             $email = trim($request->get('email'));
             $user = User::where('email',$email)->first();
             if($user){
                 //Password Reset is Active
-                if($user->is_pwd_reset){
+       /*         if($user->is_pwd_reset){
                     return response()
                         ->json([
                             'statusCode'=>550,
                             'statusMessage'=>"Use The Reset Password Token sent to ${email}",
                             'payload'=>[]], 200);
-                }
-
+                }*/
 
                 $token =strtoupper(substr(md5(rand()),0,8));
                 $user->password_reset_token = $token;
