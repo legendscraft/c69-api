@@ -65,6 +65,7 @@ class SendReportController extends Controller
         }
 
         $message = trim($request->get('message'));
+	// Log::info($message);
         $period = $request->get('period');
         $title = "C69 - ${period} Report";
         $report_data =  $this->get_report($period);
