@@ -46,40 +46,46 @@ class SendReportController extends Controller
             }
             return response()->json($errs, 500);
         }
-        $user = auth()->user();
+        try {
+            $user = auth()->user();
 
-        $recipient_array = explode(',',$request->get('recipients'));
-        $report_recipient_array = array();
-        $err_msg = null;
-        foreach ($recipient_array as $recp){
-            $recipient = trim($recp);
-            if(!filter_var($recipient, FILTER_VALIDATE_EMAIL)){
-                $err_msg = "The email address ".$recp." is invalid";
-            break;
+            $recipient_array = explode(',',$request->get('recipients'));
+            $report_recipient_array = array();
+            $err_msg = null;
+            foreach ($recipient_array as $recp){
+                $recipient = trim($recp);
+                if(!filter_var($recipient, FILTER_VALIDATE_EMAIL)){
+                    $err_msg = "The email address ".$recp." is invalid";
+                    break;
+                }
+                array_push($report_recipient_array,$recipient);
             }
-            array_push($report_recipient_array,$recipient);
+
+            if($err_msg){
+                return response()->json(['statusCode'=>1,'statusMessage'=>$err_msg,'payload'=>[$err_msg]], 500);
+            }
+
+            $message = trim($request->get('message'));
+            // Log::info($message);
+            $period = $request->get('period');
+            $title = "C69 - ${period} Report";
+            $report_data =  $this->get_report($period);
+            $data = array('user'=>$user,"title"=>$title,"report_data"=>$report_data);
+            $pdf = PDF::loadView('report.template', array('data' => $data));
+            $filepath = public_path('reports');
+            $filename = Carbon::now()->format('Ymdhis').".pdf";
+            $full_path = $filepath.'/'.$filename;
+            $pdf->save($full_path);
+
+            //Send email, attach full path
+            Mail::cc($report_recipient_array)
+                ->queue(new SendReport($title,$user->name,$message,$full_path));
+            return response()->json(['statusCode'=>0,'statusMessage'=>'Report Sent Successfully','payload'=>[]], 200);
+        } catch (\Exception $exception) {
+            Log::error("An unknown error has just occurred");
+            Log::error($exception);
+            return response()->json(['statusCode'=>1,'statusMessage'=>"An unknown server error occurred while sending the reports. Please contact the app admin.",'payload'=>[$exception->getMessage()]], 500);
         }
-
-        if($err_msg){
-            return response()->json(['statusCode'=>1,'statusMessage'=>$err_msg,'payload'=>[$err_msg]], 500);
-        }
-
-        $message = trim($request->get('message'));
-	// Log::info($message);
-        $period = $request->get('period');
-        $title = "C69 - ${period} Report";
-        $report_data =  $this->get_report($period);
-        $data = array('user'=>$user,"title"=>$title,"report_data"=>$report_data);
-        $pdf = PDF::loadView('report.template', array('data' => $data));
-        $filepath = public_path('reports');
-        $filename = Carbon::now()->format('Ymdhis').".pdf";
-        $full_path = $filepath.'/'.$filename;
-        $pdf->save($full_path);
-
-        //Send email, attach full path
-        Mail::cc($report_recipient_array)
-            ->queue(new SendReport($title,$user->name,$message,$full_path));
-        return response()->json(['statusCode'=>0,'statusMessage'=>'Report Sent Successfully','payload'=>[]], 200);
     }
 
     /**
