@@ -13,10 +13,12 @@
         "barryvdh/laravel-dompdf": "^0.8.4",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "laravel/framework": "5.8.*",
+        "laravel/framework": "^6.0",
+        "laravel/helpers": "^1.6",
         "laravel/tinker": "^1.0",
+        "nesbot/carbon": "^2.66",
         "sentry/sentry-laravel": "^1.0",
-        "tymon/jwt-auth": "1.0.*"
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
