@@ -17,6 +17,7 @@
         "laravel/helpers": "^1.6",
         "laravel/tinker": "^1.0",
         "nesbot/carbon": "^2.66",
+        "php-http/message-factory": "^1.1",
         "sentry/sentry-laravel": "^1.0",
         "tymon/jwt-auth": "^1.0"
     },
@@ -31,7 +32,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "extra": {
         "laravel": {

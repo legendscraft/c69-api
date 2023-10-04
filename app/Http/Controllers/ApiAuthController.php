@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Appointment;
 
 class ApiAuthController extends Controller
 {
@@ -170,6 +171,31 @@ class ApiAuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+    
+
+    public function deleteUser()
+    {
+        $user = auth()->user();
+        
+
+        if (!$user) {
+            return response()->json(['statusCode' => 1, 'statusMessage' => 'User not found'], 404);
+        }
+
+        try {
+            // Delete the user
+            $user->delete();
+
+            // Logout the user
+            auth()->logout();
+
+            return response()->json(['statusCode' => 0, 'statusMessage' => 'User deleted successfully']);
+        } catch (\Exception $e) {
+            // Handle exception, log it, or return an appropriate error response
+            return response()->json(['statusCode' => 1, 'statusMessage' => 'Error deleting user'], 500);
+        }
     }
 
 }

@@ -23,6 +23,7 @@ Route::group([
     Route::post('logout', 'ApiAuthController@logout');
     Route::post('refresh', 'ApiAuthController@refresh');
     Route::post('resetpwd', 'ApiAuthController@resetpwd');
+    Route::post('deleteuser', 'ApiAuthController@deleteUser');
     Route::group(['middleware' => ['auth:api']],function (){
         Route::apiResource('centres', 'CentreController');
         Route::apiResource('preachings', 'PreachingController');
