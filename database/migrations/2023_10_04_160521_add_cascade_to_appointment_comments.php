@@ -15,7 +15,7 @@ class AddCascadeToAppointmentComments extends Migration
     {
         Schema::table('appointment_comments', function (Blueprint $table) {
             // Add ON DELETE CASCADE to the foreign key constraint
-            $table->foreign('appointment_id')->references('id')->on('appointments')->onDelete('CASCADE');
+            $table->foreign('appointment_id','appocomfk')->references('id')->on('appointments')->onDelete('CASCADE');
         });
     }
 
@@ -28,7 +28,7 @@ class AddCascadeToAppointmentComments extends Migration
     {
         Schema::table('appointment_comments', function (Blueprint $table) {
             // Remove the foreign key constraint
-            $table->dropForeign(['appointment_id']);
+            $table->dropForeign(['appocomfk']);
         });
     }
 }

@@ -19,10 +19,11 @@ class AddCascadeToAppointmentsTable extends Migration
             //
             Schema::table('appointments', function (Blueprint $table) {
                 // Add ON DELETE CASCADE to the foreign key constraints
-                $table->foreign('gender_id')->references('id')->on('genders')->onDelete('CASCADE');
-                $table->foreign('centre_id')->references('id')->on('centres')->onDelete('CASCADE');
-                $table->foreign('appointment_frequency_id')->references('id')->on('appointment_frequencies')->onDelete('CASCADE');
-                $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
+               //$table->foreign('sacrament_id', 'fk_sacrament_records_sacrament')->references('id')->on('sacraments')->onDelete('CASCADE');
+               // $table->foreign('gender_id','genderfk')->references('id')->on('genders')->onDelete('CASCADE');
+                //$table->foreign('centre_id','centrefk')->references('id')->on('centres')->onDelete('CASCADE');
+                //$table->foreign('appointment_frequency_id','appointmentfreqfk')->references('id')->on('appointment_frequencies')->onDelete('CASCADE');
+                $table->foreign('user_id','appointmentuuidfk')->references('id')->on('users')->onDelete('CASCADE');
             });
         });
     }
@@ -36,10 +37,11 @@ class AddCascadeToAppointmentsTable extends Migration
     {
         Schema::table('appointments', function (Blueprint $table) {
             //
-            $table->dropForeign(['gender_id']);
-            $table->dropForeign(['centre_id']);
-            $table->dropForeign(['appointment_frequency_id']);
-            $table->dropForeign(['user_id']);
+            $table->dropForeign('genderfk');
+            $table->dropForeign('centrefk');
+            $table->dropForeign('appointmentfreqfk');
+            $table->dropForeign('appointmentuidfk');
+         
         });
     }
 }

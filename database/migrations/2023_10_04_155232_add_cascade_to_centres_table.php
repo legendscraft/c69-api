@@ -15,7 +15,7 @@ class AddCascadeToCentresTable extends Migration
     {
         Schema::table('centres', function (Blueprint $table) {
             // Add ON DELETE CASCADE to the foreign key constraint
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
+            $table->foreign('user_id','centreuid')->references('id')->on('users')->onDelete('CASCADE');
         });
     }
 
@@ -28,7 +28,7 @@ class AddCascadeToCentresTable extends Migration
     {
         Schema::table('centres', function (Blueprint $table) {
             // Remove the foreign key constraint
-            $table->dropForeign(['user_id']);
+            $table->dropForeign('centreuid');
         });
     }
 }

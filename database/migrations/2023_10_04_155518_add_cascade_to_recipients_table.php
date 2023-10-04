@@ -16,7 +16,7 @@ class AddCascadeToRecipientsTable extends Migration
       
         Schema::table('recipients', function (Blueprint $table) {
             // Add ON DELETE CASCADE to the foreign key constraint
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
+            $table->foreign('user_id','recipufk')->references('id')->on('users')->onDelete('CASCADE');
         });
     }
 
@@ -29,7 +29,7 @@ class AddCascadeToRecipientsTable extends Migration
     {
         Schema::table('recipients', function (Blueprint $table) {
             // Remove the foreign key constraint
-            $table->dropForeign(['user_id']);
+            $table->dropForeign('recipufk');
         });
     }
 }

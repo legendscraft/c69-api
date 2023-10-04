@@ -15,9 +15,8 @@ class AddCascadeToSacramentRecordsTable extends Migration
     {
         Schema::table('sacrament_records', function (Blueprint $table) {
             //
-            $table->foreign('sacrament_id')->references('id')->on('sacraments')->onDelete('CASCADE');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
-    
+            $table->foreign('sacrament_id', 'fk_sacrament_records_sacrament')->references('id')->on('sacraments')->onDelete('CASCADE');
+            $table->foreign('user_id', 'fk_sacrament_records_user')->references('id')->on('users')->onDelete('CASCADE');
         });
     }
 
@@ -31,8 +30,8 @@ class AddCascadeToSacramentRecordsTable extends Migration
         Schema::table('sacrament_records', function (Blueprint $table) {
            
                // Remove the foreign key constraints
-               $table->dropForeign(['sacrament_id']);
-               $table->dropForeign(['user_id']);
+               $table->dropForeign('fk_sacrament_records_sacrament');
+               $table->dropForeign('fk_sacrament_records_user');
         });
     }
 }
